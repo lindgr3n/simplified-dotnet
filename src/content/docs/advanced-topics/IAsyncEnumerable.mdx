@@ -1,0 +1,44 @@
+---
+title: IAsyncEnumerable
+description: IAsyncEnumerable interface is used to provide a way to iterate over a collection asynchronously.
+---
+
+# IAsyncEnumerable
+
+`IAsyncEnumerable` interface is used to provide a way to iterate over a collection asynchronously. It is a part of the `System.Collections.Generic` namespace. It is used to iterate over a collection of data asynchronously. It is used to provide a way to iterate over a collection asynchronously. It is a part of the `System.Collections.Generic` namespace. It is used to iterate over a collection of data asynchronously.
+
+## Example
+
+```csharp
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+class Program
+{
+    static async Task Main()
+    {
+        await foreach (var number in GenerateSequence())
+        {
+            Console.WriteLine(number);
+        }
+    }
+
+    static async IAsyncEnumerable<int> GenerateSequence()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            await Task.Delay(100);
+            yield return i;
+        }
+    }
+}
+```
+
+In the above example, we have created a method `GenerateSequence` that returns an `IAsyncEnumerable<int>`. We are using the `await foreach` loop to iterate over the collection asynchronously.
+
+## References
+
+- [IAsyncEnumerable Interface](https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.iasyncenumerable-1?view=net-6.0)
+- [Asynchronous streams in C# 8.0](https://docs.microsoft.com/en-us/dotnet/csharp/whats-new/csharp-8#asynchronous-streams)
+- [Asynchronous programming with async and await](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/async/)

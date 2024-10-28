@@ -1,0 +1,161 @@
+---
+title: Overview of Core Concepts
+description: Small description.
+---
+
+# Environmental variables
+
+## Introduction
+
+Environmental variables are a way to store sensitive information or configuration settings that can vary based on different environments 
+such as local, development, staging, or production. In a .NET application, you can use environmental variables to store values such as database connection strings, 
+API keys, and other sensitive information.
+
+Because sensitive information should not be referenced in your code or repository you can use a `Secret Manager`. 
+Secret Manager is a tool in Visual Studio that allows you to store sensitive data such as API keys, connection strings, and other secrets in a separate file that is 
+not committed to source control. This file is called `secrets.json` and is stored in the user profile directory. You can think of this tool as
+the same way you are storing sensitive information inside `.env` files. 
+The Secret Manager tool is useful for storing sensitive data that you don't want to commit to source control, such as API keys, connection strings, and other secrets.
+
+Default this file is located inside `%APPDATA%\Microsoft\UserSecrets\<user_secrets_id>\secrets.json` where `<user_secrets_id>` is a unique identifier for the project.
+The unique identifier is generated when you create a new project and is stored in the `UserSecretsId` property in the project file.
+
+Note: The Secret Manager tool does not encrypt the secrets that it stores. It simply stores them in a separate file that is not committed to source control.
+
+## Setting up
+
+If it is not already added you can use the following command to add the `UserSecretsId` property to the project file.
+
+```bash
+dotnet user-secrets init
+```
+
+To use the Secret Manager tool, you must first install the `Microsoft.Extensions.Configuration.UserSecrets` package. You can do this by running the following command in the terminal.
+
+```bash
+dotnet add package Microsoft.Extensions.Configuration.UserSecrets
+```
+
+After you have installed the `Microsoft.Extensions.Configuration.UserSecrets` package, you can use the Secret Manager tool to store sensitive data. You can do this by running the following command in the terminal.
+
+```bash
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;"
+```
+
+After you have added your sensitive data to the `secrets.json` file, you can access it in your code using the `ConfigurationBuilder` class. You can do this by adding the following code to your `Program.cs` file.
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+var movieApiKey = builder.Configuration["Movies:ServiceApiKey"];
+
+var app = builder.Build();
+
+app.MapGet("/", () => movieApiKey);
+
+app.Run();
+```
+
+Or by injecting the configuration in a service.
+
+```csharp
+
+public class MyService
+{
+    private readonly IConfiguration _configuration;
+
+    public MyService(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public void DoSomething()
+    {
+        var movieApiKey = _configuration["Movies:ServiceApiKey"];
+    }
+}
+```
+
+## Mapping of secrets configuration
+
+```JSON
+{
+  "Movies:ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=Movie-1;Trusted_Connection=True;MultipleActiveResultSets=true",
+  "Movies:ServiceApiKey": "12345"
+}
+```
+
+Then we have a class for the configuration.
+
+```csharp
+public class MoviesConfiguration
+{
+    public string ConnectionString { get; set; }
+    public string ServiceApiKey { get; set; }
+}
+```
+
+Then we can get the configuration in the `Program.cs` file.
+
+```csharp
+var moviesConfig = Configuration.GetSection("Movies").Get<MovieSettings>();
+_moviesApiKey = moviesConfig.ServiceApiKey;
+```
+
+
+## Using cli for secrets
+
+You can also use the command line to set and get secrets.
+
+### Set secret
+
+```bash
+dotnet user-secrets set "Movies:ServiceApiKey" "12345"
+```
+
+### Remove secret
+
+```bash
+dotnet user-secrets remove "Movies:ServiceApiKey"
+```
+
+### List secrets
+
+```bash
+dotnet user-secrets list
+```
+
+### Remove all secrets
+
+```bash
+dotnet user-secrets clear
+```
+
+
+## Using Environmental Variables
+
+You can also use environmental variables to store sensitive data. You can do this by adding the sensitive data to the `.env` file and then accessing it in your code using the `Environment` class.
+
+To add the sensitive data to the `.env` file, you can use the following format.
+
+```env
+CONNECTION_STRING=Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;
+```
+
+After you have added the sensitive data to the `.env` file, you can access it in your code using the `Environment` class.
+
+```csharp
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+Console.WriteLine(connectionString);
+```
+
+This will return the value of the `CONNECTION_STRING` key in the `.env` file.
+
+## Conclusion
+
+In this article, we have learned how to use the Secret Manager tool to store sensitive data and how to access it in your code using the `ConfigurationBuilder` class. We have also learned how to use environmental variables to store sensitive data and how to access it in your code using the `Environment` class.
+
+
+## References
+
+https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-8.0&tabs=windows
+https://learn.microsoft.com/en-us/aspnet/core/security/key-vault-configuration?view=aspnetcore-8.0

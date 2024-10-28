@@ -1,0 +1,135 @@
+---
+title: "testing"
+description: ""
+---
+
+Differnet testing frameworks MSTest, NUnit, and xUnit.Net.
+Pro cons, setting up project
+using Bogus
+
+## Project setup
+
+Create new project -> search for xUnit Test Project and create it.
+
+NOTE: add small information about the different testing projects
+
+Setting up unit test
+
+Advanced using database local and in memory
+
+## Integration tests
+
+Setting up integration tests using mvctest
+
+Install nuget package `Microsoft.AspNetCore.Mvc.Testing`
+
+```bash
+dotnet add package Microsoft.AspNetCore.Mvc.Testing
+```
+
+To make the mvc testing work we need some initial code to handle the database connection.
+
+First expose our SUT (System Under Test) that is our api Progam class.
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+// ... Configure services, routes, etc.
+app.Run();
++ public partial class Program { }
+```
+
+Or we could change the .csproj file to inlcude the test ApplicationDbContext
+```xml
+<ItemGroup>
+     <InternalsVisibleTo Include="MyTestProject" />
+</ItemGroup>
+```
+
+If we create a test to verify that our setup is working we can create a test that verifies that the index page is working.
+
+```csharp
+public class BasicTests 
+    : IClassFixture<WebApplicationFactory<Program>>
+{
+    private readonly WebApplicationFactory<Program> _factory;
+
+    public BasicTests(WebApplicationFactory<Program> factory)
+    {
+        _factory = factory;
+    }
+
+    [Theory]
+    [InlineData("/")]
+    [InlineData("/Index")]
+    [InlineData("/About")]
+    [InlineData("/Privacy")]
+    [InlineData("/Contact")]
+    public async Task Get_EndpointsReturnSuccessAndCorrectContentType(string url)
+    {
+        // Arrange
+        var client = _factory.CreateClient();
+
+        // Act
+        var response = await client.GetAsync(url);
+
+        // Assert
+        response.EnsureSuccessStatusCode(); // Status Code 200-299
+        Assert.Equal("text/html; charset=utf-8", 
+            response.Content.Headers.ContentType.ToString());
+    }
+}
+```
+
+Next we need the configure the web application factory to use the test database.
+There is pro and cons using a inMemory database. The pro is that it is fast and easy to setup and works inside ci enviroment. 
+The cons is that it is not the same as a real database. For local enviroment it's easier to use a local database because then you can connect to the datbase to see the data that have been created.
+
+
+```csharp
+// https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0#customize-webapplicationfactory
+public class CustomWebApplicationFactory<TProgram>
+    : WebApplicationFactory<TProgram> where TProgram : class
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            var dbContextDescriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                    typeof(DbContextOptions<ApplicationDbContext>));
+
+            services.Remove(dbContextDescriptor);
+
+            var dbConnectionDescriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                    typeof(DbConnection));
+
+            services.Remove(dbConnectionDescriptor);
+
+            // Create open SqliteConnection so EF won't automatically close it.
+            services.AddSingleton<DbConnection>(container =>
+            {
+                var connection = new SqliteConnection("DataSource=:memory:");
+                connection.Open();
+
+                return connection;
+            });
+
+            services.AddDbContext<ApplicationDbContext>((container, options) =>
+            {
+                var connection = container.GetRequiredService<DbConnection>();
+                options.UseSqlite(connection);
+            });
+        });
+
+        builder.UseEnvironment("Development");
+    }
+}
+```
+
+https://learn.microsoft.com/en-us/ef/core/testing/testing-with-the-database
+
+ ## References
+
+ https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0
+ https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-with-dotnet-test

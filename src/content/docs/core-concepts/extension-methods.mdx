@@ -1,0 +1,145 @@
+---
+title: Extension methods
+description: Small description.
+---
+
+Extension methods enable you to "add" methods to existing types without creating a new derived type, recompiling, or otherwise modifying the original type. Extension methods are a special kind of static method, but they are called as if they were instance methods on the extended type.
+
+## Example
+
+```csharp
+using System;
+
+public static class StringExtensions
+{
+    public static string ToTitleCase(this string str)
+    {
+        return str.Substring(0, 1).ToUpper() + str.Substring(1);
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        string str = "hello world";
+        Console.WriteLine(str.ToTitleCase());
+    }
+}
+```
+
+In the example above, the `ToTitleCase` method is an extension method for the `string` type. The `ToTitleCase` method is called on the `str` variable as if it were an instance method of the `string` type.
+
+## Extension methods and namespaces
+
+Extension methods are defined in static classes, but they are called as if they were instance methods on the extended type. To use an extension method, you must import the namespace that contains the extension method. If you have multiple extension methods with the same name, you can use the `using` directive to specify which extension method you want to use.
+
+```csharp
+using System;
+using System.Collections.Generic;
+
+namespace MyExtensions
+{
+    public static class ListExtensions
+    {
+        public static void Print<T>(this List<T> list)
+        {
+            foreach (var item in list)
+            {
+                Console.WriteLine(item);
+            }
+        }
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5 };
+        numbers.Print();
+    }
+}
+```
+
+In the example above, the `Print` method is an extension method for the `List<T>` type. To use the `Print` method, you must import the `MyExtensions` namespace.
+
+## Extension methods and nullability
+
+Extension methods can be called on `null` objects without throwing a `NullReferenceException`. If the object is `null`, the extension method is simply not called.
+
+```csharp
+using System;
+
+public static class StringExtensions
+{
+    public static string ToTitleCase(this string str)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+
+        return str.Substring(0, 1).ToUpper() + str.Substring(1);
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        string str = null;
+        Console.WriteLine(str.ToTitleCase());
+    }
+}
+```
+
+In the example above, the `ToTitleCase` method is called on a `null` object. The method checks if the object is `null` and returns `null` if it is.
+
+## Extension methods and inheritance
+
+Extension methods are not inherited by derived classes. They are only in scope when you explicitly import the namespace that contains the extension method.
+
+```csharp
+using System;
+
+public static class StringExtensions
+{
+    public static string ToTitleCase(this string str)
+    {
+        return str.Substring(0, 1).ToUpper() + str.Substring(1);
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        string str = "hello world";
+        Console.WriteLine(str.ToTitleCase());
+    }
+}
+
+public class DerivedClass : Program
+{
+    public static void Main()
+    {
+        string str = "hello world";
+        Console.WriteLine(str.ToTitleCase()); // This will not compile
+    }
+}
+```
+
+In the example above, the `ToTitleCase` method is not available in the `DerivedClass` because the `StringExtensions` namespace is not imported.
+
+## Extension methods and performance
+
+Extension methods are a convenient way to add functionality to existing types, but they can have a performance impact. Extension methods are resolved at compile time, so there is no runtime overhead for calling an extension method. However, extension methods can lead to code bloat if they are used excessively. It is important to use extension methods judiciously and consider the performance implications.
+
+## Conclusion
+
+Extension methods are a powerful feature of C# that allow you to add functionality to existing types without modifying the original type. Extension methods can be used to create fluent APIs, improve code readability, and reduce boilerplate code. However, it is important to use extension methods judiciously and consider the performance implications.
+
+## References
+
+https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods

@@ -1,0 +1,139 @@
+---
+title: Migrations
+description: Small description.
+---
+
+Info here
+
+## Migrations
+
+Migrations are used to create and update the database schema. Migrations are created by running the `dotnet ef migrations add <MigrationName>` command. This will create a new migration file in the `Migrations` folder. The migration file contains the changes that need to be applied to the database schema. The migration file is a C# file that contains a class that inherits from `Migration`. The `Up` method contains the changes that need to be applied to the database schema. The `Down` method contains the changes that need to be applied to the database schema when the migration is rolled back.
+
+
+
+#### Add a new migration
+
+    ```bash
+    dotnet ef migrations add <MigrationName>
+    ```
+
+If you have multiple db context in your projekt you need to specify the context with the `--context` flag.
+
+    ```bash
+    dotnet ef migrations add <MigrationName> --context <DbContextName>
+    ```
+
+#### Remove the last migration
+
+    ```bash
+    dotnet ef migrations remove
+    ```
+
+#### Apply migrations
+
+    ```bash
+
+    dotnet ef database update
+    ```
+
+#### Apply migrations to a specific migration
+
+    ```bash
+    dotnet ef database update <MigrationName>
+    ```
+
+#### Generate SQL script for a migration
+
+    ```bash
+    dotnet ef migrations script <FromMigration> <ToMigration>
+    ```
+
+#### Remove all migrations
+
+    ```bash
+    dotnet ef database update 0
+    ```
+
+#### Remove all migrations and the database
+
+    ```bash
+    dotnet ef database drop
+    ```
+
+#### Remove all migrations and the database and recreate it
+
+    ```bash
+
+    dotnet ef database drop --force
+    dotnet ef database update
+    ```
+
+#### List all migrations
+
+    ```bash
+    dotnet ef migrations list
+    ```
+
+#### Generate a SQL script for all migrations
+
+    ```bash
+    dotnet ef migrations script
+    ```
+
+#### Generate a SQL script for all migrations to a specific migration
+
+    ```bash
+    dotnet ef migrations script 0 <MigrationName>
+    ```
+
+
+
+### Rerun all migrations
+    
+    ```bash
+    dotnet ef database update 0
+    dotnet ef database update
+    ```
+
+## Database
+
+Locadb can be used inside Visual Studio by open `View -> SQL Server Object Explorer` and connect to the database.
+
+You can also use e.g Microsoft SQL Server Management Studio to connect to the database. By using `(LocalDB)\MSSQLLocalDB` as the server name.
+
+Need to update with text about using migrations by just creating a class.
+```csharp
+[Migration("20220101000000_MyMigration")]
+[DBContext(typeof(MyDbContext))]
+public class MyMigration : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.CreateTable(
+            name: "MyTable",
+            columns: table => new
+            {
+                Id = table.Column<int>(nullable: false)
+                    .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                Name = table.Column<string>(nullable: true)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_MyTable", x => x.Id);
+            });
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable("MyTable");
+    }
+}
+
+Need to check up this, you dont need the designer and other things the ef creates. Why do you need them?
+```
+
+## References
+
+https://learn.microsoft.com/en-us/ef/core/managing-schemas/
+https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli
+import type { DevToolbarCanvas } from "astro/runtime/client/dev-toolbar/toolbar.js"

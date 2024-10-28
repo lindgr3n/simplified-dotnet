@@ -1,0 +1,21 @@
+---
+title: Component lifecycles
+description: Small description.
+---
+
+
+Blazor apps that prerender their content on the server call OnInitializedAsync twice:
+
+    Once when the component is initially rendered statically as part of the page.
+    A second time when the browser renders the component.
+
+OnSetParametersAsync is called whenever the component is rendered, whether it's the first time or subsequent times. 
+This method is called after the component is initialized and after the component's parameters are set.
+Fetch data here instead of OnInitializedAsync. Because second navigation will not call OnInitializedAsync.
+Not to be interchanged with SetParametersAsync 
+
+## References
+
+https://learn.microsoft.com/en-us/aspnet/core/blazor/components/lifecycle?view=aspnetcore-8.0
+https://jonhilton.net/blazor-navigation-same-page/
+https://learn.microsoft.com/en-us/aspnet/core/blazor/performance?view=aspnetcore-8.0#implement-setparametersasync-manually

@@ -1,0 +1,51 @@
+---
+title: Introduction to .NET 8
+description: Small description.
+---
+
+import { LinkCard } from '@astrojs/starlight/components'
+
+Starting to learn .NET can be a big learning curve. Coming from TypeScript you will feel kinda at home with C#. 
+Hard thing is to get into setting up the project and deployment. Combine that with Entity Frame Core (EFC) and you can be stuck reading micosoft documentation, tutorials, blog posts and back to microsoft documentation again. And still have questions.
+
+<LinkCard
+  title="No time to read, skip to start!"
+  description="If you are not into history jump directly to Getting Started"
+  href="/getting-started/overview"
+/>
+
+## Why are we making another documentation?
+
+This documentation is my goal to get the cherry picks of the [Microsoft documentation](https://learn.microsoft.com/sv-se/) on how you get started and deploy a project. 
+Coming from the JavaScript world and have been using both [Laravel](https://laravel.com/) and [AdonisJS](https://adonisjs.com/) i hope this can give a different approach on how to structure it and what is the most important parts to get into.
+Initially this is in first hand for myself to give a better understanding but also will focus on describing the content to someone that is a beginner to .NET. So you faster can get into the world of .NET.
+
+Are you a well into the .NET world I appriciate all the help i can both with corrections and improvements.
+Give more examples and maby we could give some more "Advanced" sections for each topic. Read <a href="/contributions">how to contribute</a>
+
+## The Microsoft Documentation
+
+Let's start and look at the microsoft docs https://learn.microsoft.com/sv-se/. Lets say we want to know how to starta a web project. We could search "start new project", That gives us "759 339 resultat för "start new project"
+Looks like we get alot of other technologis we are not interested in, lets just filter on .NET and documentation. "7 887 resultat för "start new project" i Dokumentation" Still over 7k results.
+We can expand the .NET filter and select just what we want. Eg ASP.NET MVC. Now we just have around 200 results. Still all on the first page is older documentations. And I still dont know what i need to do.
+
+## The product catalog
+
+Lets look at the product catalog https://learn.microsoft.com/sv-se/docs/ Here we have a bit more structure. Lets check out .NET. Here we have a better overview.
+Still I just want to create a project. I guess after looking at the content the following looks promesing [develop webapps with asp.net core](https://learn.microsoft.com/sv-se/aspnet/core/)
+Ahh good, here we get more selections! (ironi). Well feels like Page-focused web UI with MVC is what im looking for. Thinking like a beginner i guess that is really hard to know. What is "Page", "MVC", "UI"? 
+
+Lets check out [create you first asp.net core app](https://learn.microsoft.com/sv-se/aspnet/core/tutorials/first-mvc-app/start-mvc?view=aspnetcore-8.0)
+There we go. Finally something we can work with.
+
+## Digging deeper
+
+After following the guide you will have a basic understanding about how it all is set up. For me atleast there where alot of questionmarks and I felt that it was alot of uneccessary text.
+It gets kinda overwelming. Text overflow you could say. Especcially if you never have touched .NET before.
+
+Lets try and add som model information about e.g. max length of the field. Then we need to dig into EFC core database modeling. Looking in the documentation we find the [EFC docmentation](https://learn.microsoft.com/sv-se/ef/core/). 
+Just looking in the sidebar we could guess it should be under **Create a model** -> **Entity properties** (But i think people new to dotnet would have a hard time figure that out. I sure had the first time). 
+Looking at this we find [Column data types](https://learn.microsoft.com/sv-se/ef/core/modeling/entity-properties?tabs=data-annotations%2Cwithout-nrt#column-data-types) where they show how to define a max lengt of a field with **[Column(TypeName = "varchar(200)")]**
+If you did not note it, we can also use [Fluent API](https://learn.microsoft.com/en-us/ef/core/modeling/#use-fluent-api-to-configure-a-model) do define the columns inside the **OnModelCreating** method. This approach can be good for e.g. [dynamic models](https://learn.microsoft.com/en-us/ef/core/modeling/dynamic-model).
+
+Don't give me wrong, the Microsoft documentation is massive and well explained, when you finnaly find what you are looking for. Problem is most of the time you do now know what you are looking for. Thats what we are going to try and help whith this documentation.

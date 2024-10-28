@@ -1,0 +1,72 @@
+---
+title: Seeding
+description: Different ways to seed your database with data.
+---
+
+We have three different ways to seed the database with data.
+1. Using the model builder in the `OnModelCreating` method.
+2. Using manual migration customizations
+3. Using custom initialization logic
+
+## Using model builder
+
+
+
+## Using manual migration customizations
+
+## Using custom initialization logic
+
+create a static class SeedManager.
+
+```csharp
+public static class SeedManager
+{
+    public static void Seed(IServiceProvider serviceProvider)
+    {
+        using (var context = new DbContext(serviceProvider.GetRequiredService<DbContextOptions<DbContext>>()))
+        {
+            if (context.Database.GetPendingMigrations().Any())
+            {
+                context.Database.Migrate();
+            }
+
+            if (!context.Entities.Any())
+            {
+                context.Entities.AddRange(
+                    new Entity { Name = "Entity 1" },
+                    new Entity { Name = "Entity 2" },
+                    new Entity { Name = "Entity 3" }
+                );
+
+                context.SaveChanges();
+            }
+        }
+    }
+}
+```
+
+Next we need to call the `Seed` method in the `Program` class.
+
+```csharp
+public class Program
+{
+    // Program code
+    var app = builder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            SeedManager.Initialize(services);
+        }
+    }
+    // Rest of code
+}
+```
+
+
+
+## References
+
+https://learn.microsoft.com/en-us/ef/core/modeling/data-seeding

@@ -1,0 +1,22 @@
+---
+title: Routing
+description: Small description.
+---
+
+##
+
+
+### Prevent matching files
+
+To prevent matching files, you can use the `nonfile` parameter in the route template. This will prevent the route from matching any files in the application. For example, the following route will match any URL that does not match a file in the application.
+
+
+```
+@page "/{*pageRoute:nonfile}".
+```
+
+
+## References
+
+https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.builder.razorpagesendpointroutebuilderextensions.mapfallbacktopage?view=aspnetcore-8.0
+https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/routing?view=aspnetcore-8.0

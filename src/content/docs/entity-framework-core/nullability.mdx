@@ -1,0 +1,28 @@
+---
+title: Overview of Entity Framwork Core (EFC)
+description: Small description.
+---
+
+Info here
+
+Nullability and Initialization
+
+    `public Blog Blog { get; set; } = null!;`:
+        This syntax uses the null-forgiving operator (!) to bypass nullability warnings that would otherwise be raised by the compiler for nullable reference types. It effectively tells the compiler, "I know this is initialized to null, but trust me, it will be non-null when I use it." This approach is often used in EF Core models to satisfy the compiler's requirement for non-nullable reference types without initializing navigation properties with actual instances.
+        The comment // Required reference navigation to principal is purely informational and has no impact on the code's execution. It's a hint to developers that, despite the initialization with null!, this property is expected to be populated in any valid entity instance (e.g., when retrieved from the database).
+
+    `public required virtual User User { get; set; }`:
+        The required keyword is a feature introduced in C# 10 with .NET 6 that enforces the initialization of non-nullable reference type properties before the constructor completes. It's part of the language's nullable reference types feature set aimed at reducing null reference exceptions.
+        Using required on a navigation property in an EF Core model indicates to both the developer and the compiler that this property must be set for the entity to be considered valid. Unlike the null-forgiving operator, required is a compile-time enforcement that this property should not be null when the entity is being used.
+        The virtual keyword enables lazy loading proxies in EF Core, assuming lazy loading is enabled in your DbContext configuration. This means EF Core can automatically load this property's value from the database the first time it's accessed if it hasn't already been loaded
+        Implications and Usage
+
+    Entity Framework Core Behavior: Both approaches are used to deal with the framework's handling of navigation properties, which are often loaded from the database after an entity instance has been constructed. EF Core is designed to work with these patterns, understanding that navigation properties may be populated outside of the normal constructor logic (e.g., via lazy loading or explicit loading after the entity is retrieved from the database).
+
+    Compile-time Safety vs. Runtime Behavior: The key difference lies in compile-time checks versus runtime behavior. The required keyword adds compile-time safety, ensuring developers do not forget to initialize these properties. The null! initialization bypasses compile-time checks for nullability but does not provide the same level of safety; it's more of a workaround to satisfy the compiler while acknowledging the reality of EF Core's post-construction property initialization.
+
+    Version Compatibility: The required keyword is only available in C# 10 and later, so its use requires a project targeting .NET 6 or higher. The null-forgiving operator (!) and comments can be used in earlier versions of C# and .NET.
+
+Conclusion
+
+Choosing between these approaches depends on your project's target framework version, your team's preferences for compile-time safety versus runtime flexibility, and how you manage entity initialization and validation in your application. If you're using .NET 6 or higher and prefer compile-time enforcement of non-nullability for navigation properties, required offers a clear and explicit way to model this requirement. The null-forgiving operator approach provides more flexibility but relies more on developer discipline and understanding of EF Core's behavior to ensure properties are correctly initialized before use.

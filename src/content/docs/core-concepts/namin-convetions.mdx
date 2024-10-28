@@ -1,0 +1,43 @@
+---
+title: Namin conventions
+description: How do we name things.
+---
+
+Pascal, camel, kebab, snake, screaming snake, etc.
+```
+[Parameter( CaptureUnmatchedValues = true )] public Dictionary<string, object> Attributes { get; set; }
+```
+
+## Naming conventions
+
+A components name must start with an uppercase character
+
+### General naming conventions
+
+- Use PascalCase for namespaces, types, and members.
+- Use camelCase for parameters and local variables.
+- Use a verb-object pair for method names.
+- Use a noun for property names.
+- Use a noun or noun phrase for enum types.
+- Use a singular noun for enum values.
+- Use a noun for event names.
+- Use a noun or noun phrase for constant values.
+
+
+Documentation and sample app Razor directive order:
+
+    @page
+    @rendermode (.NET 8 or later)
+    @using
+        System namespaces (alphabetical order)
+        Microsoft namespaces (alphabetical order)
+        Third-party API namespaces (alphabetical order)
+        App namespaces (alphabetical order)
+    Other directives (alphabetical order)
+
+
+
+## References
+
+https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions
+https://learn.microsoft.com/en-us/aspnet/core/blazor/components/?view=aspnetcore-8.0
